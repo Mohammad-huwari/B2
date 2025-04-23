@@ -9,27 +9,27 @@ const crypto = require('crypto');
 const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
-// إعداد S3 Client لـ DigitalOcean Spaces
+
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
-  endpoint: `https://${process.env.AWS_REGION}.digitaloceanspaces.com`, // ✅ تحديد DigitalOcean Spaces
+  endpoint: `https://${process.env.AWS_REGION}.digitaloceanspaces.com`, 
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   },
 });
 
-// دالة لإنشاء Signed URL للفيديوهات
+
 const getSignedVideoUrl = async (videoKey) => {
   const command = new GetObjectCommand({
-    Bucket: process.env.AWS_BUCKET_NAME, // ✅ تأكد من أن اسم الباكت صحيح
-    Key: videoKey, // ✅ استخدم اسم الملف بدون أي تعديل
+    Bucket: process.env.AWS_BUCKET_NAME, 
+    Key: videoKey, // 
   });
 
-  const signedUrl = await getSignedUrl(s3, command, { expiresIn: 3600 }); // صالح لمدة ساعة
+  const signedUrl = await getSignedUrl(s3, command, { expiresIn: 3600 }); 
   return signedUrl;
 };
-// getSignedVideoUrl('video1.mp4').then(console.log).catch(console.error);
+
 
 exports.createCourse = catchAsync(async (req, res, next) => {
   const newCoures = await Course.create(req.body);
@@ -51,7 +51,7 @@ exports.getcourses = catchAsync(async (req, res, next) => {
 
   // console.log('req.user.id : ', req.user.id);
 
-  // التحقق مما إذا كان المستخدم قد اشترى الكورس أم لا
+  
   const hasPurchased =
     req.user &&
     course.purchasedBy.some(
@@ -61,10 +61,10 @@ exports.getcourses = catchAsync(async (req, res, next) => {
   course.sections.forEach((section) => {
     if (section.videos && Array.isArray(section.videos)) {
       section.videos.forEach((video) => {
-        // أخفِ bucketname دائماً
+        
         video.bucketname = undefined;
 
-        // أخفِ روابط الفيديو إذا لم يكن المستخدم قد اشترى الكورس
+        
         if (!hasPurchased) {
           video.url = undefined;
         }
@@ -149,16 +149,16 @@ exports.streamVideo = catchAsync(async (req, res, next) => {
   const userId = req.user.id;
   const videoId = req.params.videoId;
 
-  // 🔹 البحث عن الفيديو في قاعدة البيانات
+  
   const course = await Course.findOne({
     sections: { $elemMatch: { videos: { $elemMatch: { _id: videoId } } } },
-  }); // .populate('purchasedBy', 'name email');
+  }); 
 
   if (!course) {
     return next(new AppError('Video not found in any course!', 404));
   }
 
-  // 🔹 التحقق مما إذا كان المستخدم قد اشترى الكورس
+
   const hasPurchased = course.purchasedBy.some(
     (user) => user.id.toString() === userId.toString()
   );
@@ -169,7 +169,7 @@ exports.streamVideo = catchAsync(async (req, res, next) => {
     );
   }
 
-  // 🔹 البحث عن الفيديو المطلوب
+  
   const video = course.sections
     .flatMap((section) => section.videos)
     .find((vid) => vid._id.toString() === videoId);
@@ -180,13 +180,13 @@ exports.streamVideo = catchAsync(async (req, res, next) => {
 
   // decodedFilename = decodedURIComponent(videos.url)
   try {
-    // ✅ *إنشاء Signed URL بطريقة صحيحة*
+    // 
     const command = new GetObjectCommand({
-      Bucket: video.bucketname || process.env.AWS_BUCKET_NAME, // اسم الـ Space
-      Key: video.url.split('/').pop(), // تأكد من أن الـ Key هو اسم الملف فقط
+      Bucket: video.bucketname || process.env.AWS_BUCKET_NAME, 
+      Key: video.url.split('/').pop(), 
     });
 
-    const signedUrl = await getSignedUrl(s3, command, { expiresIn: 3600 }); // رابط صالح لمدة ساعة
+    const signedUrl = await getSignedUrl(s3, command, { expiresIn: 3600 }); 
 
     res.status(200).json({
       success: true,
