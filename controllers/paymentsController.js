@@ -5,7 +5,7 @@ const User = require('../models/userModel');
 const { buyCourse } = require('./courseController');
 const { buySilverAdvice } = require('./adviceController');
 const { verifyGooglePurchase } = require('../utils/verifyGooglePurchase');
-const { verifyApplePurchase } = require('../utils/verifyApplePurchase'); // ✅ تم إضافته الآن
+const { verifyApplePurchase } = require('../utils/verifyApplePurchase'); 
 
 exports.verifyPurchase = catchAsync(async (req, res, next) => {
   const { platform, productId, purchaseToken } = req.body;
