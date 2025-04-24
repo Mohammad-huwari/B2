@@ -5,7 +5,7 @@ const serviceAccount = require(path.join(
   '../config/google-service-account.json'
 ));
 
-const packageName = 'com.example.yourapp'; // غيّر هذا إلى اسم تطبيقك
+const packageName = 'com.example.yourapp'; 
 
 const auth = new google.auth.GoogleAuth({
   credentials: serviceAccount,
@@ -25,6 +25,6 @@ exports.verifyGooglePurchase = async (productId, purchaseToken) => {
     token: purchaseToken,
   });
 
-  // ✅ التحقق من حالة الشراء
+  
   return result.data.purchaseState === 0; // 0 = purchased
 };
