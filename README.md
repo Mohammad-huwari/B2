@@ -43,5 +43,8 @@ Admins manage users, paid content, and orders with full role-based access.
  1️⃣ Clone the repo
 
 ```bash
-git clone https://github.com/yourusername/b2crypto.git
-cd b2crypto
+git clone https://github.com/Mohammad-huwari/B2.git
+cd B2
+npm install
+npm run dev
+
