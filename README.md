@@ -42,9 +42,16 @@ Admins manage users, paid content, and orders with full role-based access.
 
  1️⃣ Clone the repo
 
+
+⚡ Note: Don’t forget to create your .env file with your database URI and JWT secret before running.
 ```bash
 git clone https://github.com/Mohammad-huwari/B2.git
 cd B2
 npm install
 npm run dev
+
+
+
+
+ذذ
 
