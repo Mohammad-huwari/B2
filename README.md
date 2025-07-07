@@ -49,7 +49,3 @@ git clone https://github.com/Mohammad-huwari/B2.git
 cd B2
 npm install
 npm run dev
-
-
-ذذ
-
